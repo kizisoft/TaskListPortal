@@ -19,6 +19,7 @@
             this.gitHubOctokitService = gitHubOctokitService;
         }
 
+        [OutputCache(Duration = 10 * 60, VaryByCustom = "User")]
         public async Task<ActionResult> Index()
         {
             var loggedUser = this.user.Get();

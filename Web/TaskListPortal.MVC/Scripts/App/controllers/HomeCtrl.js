@@ -9,6 +9,21 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
         authorId = $('#authorId').val(),
         authorName = $('#authorName').val();
 
+    function getComments(comments) {
+        var result = [];
+        for (var i = 0, length = comments.length; i < length; i += 1) {
+            result.push({
+                Id: comments[i].Id,
+                Content: $sce.trustAsHtml(comments[i].Content),
+                AuthorId: comments[i].AuthorId,
+                Author: comments[i].Author,
+                CreatedOn: comments[i].CreatedOn,
+                ModifiedOn: comments[i].ModifiedOn
+            });
+        }
+        return result;
+    }
+
     tasks.getAll(repoName)
         .then(function (tasks) {
             $scope.tasks = tasks;
@@ -26,17 +41,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
 
             $element.toggleClass('current').find('.details').toggleClass('hidden');
             $scope.showComments = $element.hasClass('current');
-            //$scope.comments = task.Comments;
-            $scope.comments = task.Comments.map(function (x) {
-                return {
-                    Id: x.Id,
-                    Content: $sce.trustAsHtml(x.Content),
-                    AuthorId: x.AuthorId,
-                    Author: x.Author,
-                    CreatedOn: x.CreatedOn,
-                    ModifiedOn: x.ModifiedOn
-                };
-            });
+            $scope.comments = getComments(task.Comments);
             currentTaskId = task.Id;
         } else {
             notifier.notifyInfo('Create new comment is not finished!');
@@ -53,7 +58,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
                     status: '' + task.Status
                 };
             } else {
-                $scope.task = {status: '0'};
+                $scope.task = { status: '0' };
             }
 
             $scope.isEdit = isEdit;
@@ -78,7 +83,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
         tasks.add(repoName, repoId, task)
             .then(function (taskDb) {
                 $scope.toggleTaskForm(null, false);
-                notifier.notifySuccess('The task ' + taskDb.name + ' was created!');
+                notifier.notifySuccess('The task was created!');
                 $location.path('/home');
             }, function (err) {
                 notifier.notifyError('Can not create new task!<br/>' + (!!err.data ? err.data.Message : ''));
@@ -87,10 +92,10 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
 
     $scope.deleteTask = function (task) {
         if (!isLeftDisabled) {
-            if (window.confirm('The task ' + task.Name + 'will be deleted. Are you sure?')) {
+            if (window.confirm('The task will be deleted. Are you sure?')) {
                 tasks.remove(repoName, task.Id)
                     .then(function () {
-                        notifier.notifySuccess('The task ' + task.Name + ' was deleted!');
+                        notifier.notifySuccess('The task was deleted!');
                         $location.path('/home');
                     }, function (err) {
                         notifier.notifyError('Can not delete a task!<br/>' + (!!err.data ? err.data.Message : ''));
@@ -105,7 +110,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
         tasks.update(repoName, task.id, task)
             .then(function (taskDb) {
                 $scope.toggleTaskForm(null, false);
-                notifier.notifySuccess('The task ' + taskDb.name + ' was modified!');
+                notifier.notifySuccess('The task was modified!');
                 $location.path('/home');
             }, function (err) {
                 notifier.notifyError('Can not modify the task!<br/>' + (!!err.data ? err.data.Message : ''));
@@ -115,7 +120,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
     $scope.toggleCommentForm = function () {
         if (!isRightDisabled) {
             isLeftDisabled = !isLeftDisabled;
-            $scope.comment = {content: ''};
+            $scope.comment = { content: '' };
             $('#new-comment-btn').toggleClass('hidden');
             $('#new-comment-root').toggleClass('hidden');
         } else {
@@ -131,16 +136,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$sce', 'tasks', 'comments', 
                 $scope.toggleCommentForm();
                 comments.getAll(repoName, currentTaskId)
                     .then(function (commentsDb) {
-                        $scope.comments = commentsDb.map(function (x) {
-                            return {
-                                Id: x.Id,
-                                Content: $sce.trustAsHtml(x.Content),
-                                AuthorId: x.AuthorId,
-                                Author: x.Author,
-                                CreatedOn: x.CreatedOn,
-                                ModifiedOn: x.ModifiedOn
-                            };
-                        });
+                        $scope.comments = getComments(commentsDb);
                         notifier.notifySuccess('New comment was created!');
                     }, function (err) {
                         notifier.notifyError('Can not modify the task!<br/>' + (!!err.data ? err.data.Message : ''));

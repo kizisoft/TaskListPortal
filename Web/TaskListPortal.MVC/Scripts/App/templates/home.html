@@ -1,0 +1,115 @@
+<div class="row">
+    <div id="left" class="col-md-6">
+        <button ng-click="toggleTaskForm(null, false)" id="new-task-btn" class="btn btn-success">Create new task</button>
+
+        <div id="new-task-root" class="hidden">
+            <h3 ng-if="!isEdit">Create new task</h3>
+            <h3 ng-if="isEdit">Edit task</h3>
+            <form class="form-horizontal new-task-form" name="task">
+                <div class="form-group">
+                    <label for="task-name" class="col-md-2 control-label">Name</label>
+                    <div class="col-md-10">
+                        <input type="text" name="name" class="form-control" id="task-name" ng-model="task.name" placeholder="Task name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-description" class="col-md-2 control-label">Description</label>
+                    <div class="col-md-10">
+                        <textarea class="form-control" rows="3" id="task-description" name="description" ng-model="task.description" placeholder="Task description"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-status" class="col-md-2 control-label">Status</label>
+                    <div class="col-md-10">
+                        <select class="form-control" id="task-status" name="status" ng-model="task.status">
+                            <option value="0">Open</option>
+                            <option value="1">InProgress</option>
+                            <option value="2">Waiting</option>
+                            <option value="3">Closed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-10 col-md-offset-1">
+                        <button ng-click="toggleTaskForm(null, false)" class="btn btn-primary pull-left">Cancel</button>
+                        <button ng-click="createEditTask(task)" class="btn btn-success pull-right">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <h3>List of tasks</h3>
+
+        <div ng-if="!hasTasks">
+            <p class="alert-danger">Sorry, no tasks added.</p>
+        </div>
+
+        <div ng-if="hasTasks">
+            <ul class="list-group">
+                <li ng-repeat="task in tasks" id="{{task.Id}}" class="list-group-item accordion">
+                    <div ng-click="showTaskDetails(task)" class="name">{{task.Name}}</div>
+                    <div class="details hidden">
+                        <dl class="dl-horizontal">
+                            <dt>Description</dt>
+                            <dd>{{task.Description}}</dd>
+                            <dt>Status</dt>
+                            <dd>{{task.Status}}</dd>
+                            <dt>Created on</dt>
+                            <dd>{{task.CreatedOn}}</dd>
+                            <dt>Modified on</dt>
+                            <dd>{{task.ModifiedOn}}</dd>
+                        </dl>
+                        <hr />
+                        <div class="text-center">
+                            <button ng-click="deleteTask(task)" class="btn btn-danger btn-xs">Delete</button>
+                            <button ng-click="toggleTaskForm(task, !isEdit)" class="btn btn-warning btn-xs">Edit</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div ng-if="showComments" class="col-md-6">
+        <button ng-click="toggleCommentForm()" id="new-comment-btn" class="btn btn-success">Create new comment</button>
+
+        <div id="new-comment-root" class="hidden">
+            <h3>Create new comment</h3>
+            <form class="form-horizontal new-task-form">
+                <div class="form-group">
+                    <label for="comment-content" class="col-md-2 control-label">Content</label>
+                    <div class="col-md-10">
+                        <textarea class="form-control" rows="3" id="comment-content" name="comment-content" ng-model="comment.content" placeholder="Content"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-10 col-md-offset-1">
+                        <button ng-click="toggleCommentForm()" class="btn btn-primary pull-left">Cancel</button>
+                        <button ng-click="createComment(comment)" class="btn btn-success pull-right">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <h3>Comments</h3>
+
+        <div ng-if="!comments[0]">
+            <p class="alert-danger">Sorry, no comments added.</p>
+        </div>
+
+        <ul ng-if="comments[0]" ng-repeat="comment in comments" class="list-group">
+            <li class="list-group-item">
+                <p ng-bind-html="comment.Content"></p>
+                <hr />
+                <ul class="comment-info">
+                    <li><strong>Author: </strong>{{comment.Author.UserName}}</li>
+                    <li><strong>Created On: </strong>{{comment.CreatedOn}}</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

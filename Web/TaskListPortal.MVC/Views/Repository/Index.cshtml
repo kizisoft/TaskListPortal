@@ -1,0 +1,57 @@
+﻿@model TaskListPortal.MVC.ViewModels.GitHub.GitHubRepositoryLargeViewModel
+
+@{
+    ViewBag.Title = "Repository details";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Repository [@Model.Name] details</h2>
+        <hr />
+        @Html.HiddenFor(model => model.Id, new { @id = "repoId" })
+        @Html.HiddenFor(model => model.Name, new { @id = "repoName" })
+        @Html.HiddenFor(model => model.AuthorId, new { @id = "authorId" })
+        @Html.HiddenFor(model => model.AuthorName, new { @id = "authorName" })
+
+        <dl class="dl-horizontal">
+            <dt>@Html.DisplayNameFor(model => model.Id)</dt>
+            <dd>@Html.DisplayFor(model => model.Id)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.Name)</dt>
+            <dd>@Html.DisplayFor(model => model.Name)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.Description)</dt>
+            <dd>@Html.DisplayFor(model => model.Description)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.CreatedOn)</dt>
+            <dd>@Html.DisplayFor(model => model.CreatedOn)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.UpdatedOn)</dt>
+            <dd>@Html.DisplayFor(model => model.UpdatedOn)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.GitHubUrl)</dt>
+            <dd><a href="@Model.GitHubUrl" target="_blank">@Model.GitHubUrl</a></dd>
+        </dl>
+    </div>
+
+    <div class="col-md-12" ng-app="app" ng-controller="MainCtrl">
+        <div class="container">
+            <div ng-view></div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript" src="~/Scripts/angular.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/angular-route.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/angular-resource.min.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/App/app.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/App/controllers/MainCtrl.js"></script>
+    <script type="text/javascript" src="~/Scripts/App/controllers/HomeCtrl.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/App/services/notifier.js"></script>
+    <script type="text/javascript" src="~/Scripts/App/services/data/tasks.js"></script>
+    <script type="text/javascript" src="~/Scripts/App/services/data/comments.js"></script>
+}
